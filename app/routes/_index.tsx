@@ -916,6 +916,7 @@ export default function Page() {
                           axisLine={false}
                           tickMargin={isMobile ? 4 : 8}
                           minTickGap={isMobile ? 40 : 24}
+                          tick={!isMobile}
                           tickFormatter={formatDateLabel}
                         />
                         {axes.map((axis) => (
@@ -925,7 +926,8 @@ export default function Page() {
                             orientation={axis === "right" ? "right" : "left"}
                             axisLine={false}
                             tickLine={false}
-                            width={isMobile ? 35 : undefined}
+                            {...(isMobile ? { width: 35 } : {})}
+                            tick={!isMobile}
                             domain={
                               (axisDomains[axis] ??
                                 ["auto", "auto"]) as [
@@ -1113,13 +1115,15 @@ export default function Page() {
                           axisLine={false}
                           tickMargin={isMobile ? 4 : 8}
                           minTickGap={isMobile ? 40 : 24}
+                          tick={!isMobile}
                           tickFormatter={formatDateLabel}
                         />
                         <YAxis
                           yAxisId="left"
                           axisLine={false}
                           tickLine={false}
-                          width={isMobile ? 35 : undefined}
+                          {...(isMobile ? { width: 35 } : {})}
+                          tick={!isMobile}
                           domain={
                             (stepsCaloriesDomains.left ??
                               ["auto", "auto"]) as [
@@ -1136,7 +1140,8 @@ export default function Page() {
                           orientation="right"
                           axisLine={false}
                           tickLine={false}
-                          width={isMobile ? 40 : undefined}
+                          {...(isMobile ? { width: 40 } : {})}
+                          tick={!isMobile}
                           domain={
                             (stepsCaloriesDomains.right ??
                               ["auto", "auto"]) as [
