@@ -755,9 +755,68 @@ export default function Page() {
                 ))}
               </div>
 
-              <div className="px-4 lg:px-6">
-                <Card className="@container/card">
-                  <CardHeader>
+              <div className="px-0 lg:px-6">
+                {isMobile && (
+                  <div className="flex gap-2 px-4 pb-2">
+                    <Select
+                      value={focusMode}
+                      onValueChange={(value) => {
+                        if (value) {
+                          setFocusMode(value as FocusMode)
+                        }
+                      }}
+                    >
+                      <SelectTrigger
+                        size="sm"
+                        className="flex-1"
+                        aria-label="Selecionar visualização"
+                      >
+                        <SelectValue placeholder="Visualização" />
+                      </SelectTrigger>
+                      <SelectContent className="rounded-xl">
+                        <SelectItem value="sleep" className="rounded-lg">
+                          Sono
+                        </SelectItem>
+                        <SelectItem value="stress" className="rounded-lg">
+                          Estresse
+                        </SelectItem>
+                        <SelectItem value="heart-rate" className="rounded-lg">
+                          Frequência cardíaca
+                        </SelectItem>
+                        <SelectItem value="oxygenation" className="rounded-lg">
+                          Oxigenação
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Select
+                      value={timeframe}
+                      onValueChange={(value) =>
+                        setTimeframe(value as Timeframe)
+                      }
+                    >
+                      <SelectTrigger
+                        size="sm"
+                        className="w-32"
+                        aria-label="Selecionar período"
+                      >
+                        <SelectValue placeholder="Período" />
+                      </SelectTrigger>
+                      <SelectContent className="rounded-xl">
+                        {timeframeOptions.map((option) => (
+                          <SelectItem
+                            key={option.value}
+                            value={option.value}
+                            className="rounded-lg"
+                          >
+                            {option.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+                <Card className={`@container/card ${isMobile ? "border-0 shadow-none" : ""}`}>
+                  <CardHeader className={isMobile ? "hidden" : ""}>
                     <div className="flex flex-col gap-2">
                       <CardDescription>
                         {activeRangeLabel}
@@ -770,63 +829,30 @@ export default function Page() {
                       </p>
                     </div>
                     <CardAction className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                      {isMobile ? (
-                        <Select
-                          value={focusMode}
-                          onValueChange={(value) => {
-                            if (value) {
-                              setFocusMode(value as FocusMode)
-                            }
-                          }}
-                        >
-                          <SelectTrigger
-                            size="sm"
-                            className="w-full sm:w-48"
-                            aria-label="Selecionar visualização"
-                          >
-                            <SelectValue placeholder="Selecionar visualização" />
-                          </SelectTrigger>
-                          <SelectContent className="rounded-xl">
-                            <SelectItem value="sleep" className="rounded-lg">
-                              Sono
-                            </SelectItem>
-                            <SelectItem value="stress" className="rounded-lg">
-                              Estresse
-                            </SelectItem>
-                            <SelectItem value="heart-rate" className="rounded-lg">
-                              Frequência cardíaca
-                            </SelectItem>
-                            <SelectItem value="oxygenation" className="rounded-lg">
-                              Oxigenação
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                      ) : (
-                        <ToggleGroup
-                          type="single"
-                          value={focusMode}
-                          onValueChange={(value) => {
-                            if (value) {
-                              setFocusMode(value as FocusMode)
-                            }
-                          }}
-                          variant="outline"
-                          className="*:data-[slot=toggle-group-item]:px-4!"
-                        >
-                          <ToggleGroupItem value="sleep">
-                            Sono
-                          </ToggleGroupItem>
-                          <ToggleGroupItem value="stress">
-                            Estresse
-                          </ToggleGroupItem>
-                          <ToggleGroupItem value="heart-rate">
-                            Frequência cardíaca
-                          </ToggleGroupItem>
-                          <ToggleGroupItem value="oxygenation">
-                            Oxigenação
-                          </ToggleGroupItem>
-                        </ToggleGroup>
-                      )}
+                      <ToggleGroup
+                        type="single"
+                        value={focusMode}
+                        onValueChange={(value) => {
+                          if (value) {
+                            setFocusMode(value as FocusMode)
+                          }
+                        }}
+                        variant="outline"
+                        className="*:data-[slot=toggle-group-item]:px-4!"
+                      >
+                        <ToggleGroupItem value="sleep">
+                          Sono
+                        </ToggleGroupItem>
+                        <ToggleGroupItem value="stress">
+                          Estresse
+                        </ToggleGroupItem>
+                        <ToggleGroupItem value="heart-rate">
+                          Frequência cardíaca
+                        </ToggleGroupItem>
+                        <ToggleGroupItem value="oxygenation">
+                          Oxigenação
+                        </ToggleGroupItem>
+                      </ToggleGroup>
                       <Select
                         value={timeframe}
                         onValueChange={(value) =>
@@ -854,10 +880,10 @@ export default function Page() {
                       </Select>
                     </CardAction>
                   </CardHeader>
-                  <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
+                  <CardContent className={isMobile ? "px-0 pt-0" : "px-2 pt-4 sm:px-6 sm:pt-6"}>
                     <ChartContainer
                       config={chartConfig}
-                      className="aspect-auto h-[280px] w-full overflow-visible"
+                      className={`aspect-auto w-full ${isMobile ? "h-[240px]" : "h-[280px]"}`}
                     >
                       <AreaChart data={chartData}>
                         <defs>
@@ -888,8 +914,8 @@ export default function Page() {
                           dataKey="date"
                           tickLine={false}
                           axisLine={false}
-                          tickMargin={8}
-                          minTickGap={24}
+                          tickMargin={isMobile ? 4 : 8}
+                          minTickGap={isMobile ? 40 : 24}
                           tickFormatter={formatDateLabel}
                         />
                         {axes.map((axis) => (
@@ -899,6 +925,7 @@ export default function Page() {
                             orientation={axis === "right" ? "right" : "left"}
                             axisLine={false}
                             tickLine={false}
+                            width={isMobile ? 35 : undefined}
                             domain={
                               (axisDomains[axis] ??
                                 ["auto", "auto"]) as [
@@ -935,7 +962,7 @@ export default function Page() {
                       </AreaChart>
                     </ChartContainer>
                   </CardContent>
-                  <CardFooter className="flex flex-wrap gap-6 text-sm text-muted-foreground">
+                  <CardFooter className={isMobile ? "hidden" : "flex flex-wrap gap-6 text-sm text-muted-foreground"}>
                     <div>
                       <p className="text-xs uppercase tracking-wide">
                         Mais recente
@@ -1022,9 +1049,9 @@ export default function Page() {
                   </CardFooter>
                 </Card>
               </div>
-              <div className="px-4 lg:px-6">
-                <Card className="@container/card">
-                  <CardHeader>
+              <div className="px-0 lg:px-6">
+                <Card className={`@container/card ${isMobile ? "border-0 shadow-none" : ""}`}>
+                  <CardHeader className={isMobile ? "hidden" : ""}>
                     <CardDescription>
                       {activeRangeLabel}
                     </CardDescription>
@@ -1035,10 +1062,10 @@ export default function Page() {
                       Compare volume de movimento com queima total de energia para a janela selecionada.
                     </p>
                   </CardHeader>
-                  <CardContent className="px-2 pt-4 sm:px-6 sm:pt-6">
+                  <CardContent className={isMobile ? "px-0 pt-0" : "px-2 pt-4 sm:px-6 sm:pt-6"}>
                     <ChartContainer
                       config={stepsCaloriesChartConfig}
-                      className="aspect-auto h-[260px] w-full"
+                      className={`aspect-auto w-full ${isMobile ? "h-[240px]" : "h-[260px]"}`}
                     >
                       <AreaChart data={stepsCaloriesData}>
                         <defs>
@@ -1084,14 +1111,15 @@ export default function Page() {
                           dataKey="date"
                           tickLine={false}
                           axisLine={false}
-                          tickMargin={8}
-                          minTickGap={24}
+                          tickMargin={isMobile ? 4 : 8}
+                          minTickGap={isMobile ? 40 : 24}
                           tickFormatter={formatDateLabel}
                         />
                         <YAxis
                           yAxisId="left"
                           axisLine={false}
                           tickLine={false}
+                          width={isMobile ? 35 : undefined}
                           domain={
                             (stepsCaloriesDomains.left ??
                               ["auto", "auto"]) as [
@@ -1108,6 +1136,7 @@ export default function Page() {
                           orientation="right"
                           axisLine={false}
                           tickLine={false}
+                          width={isMobile ? 40 : undefined}
                           domain={
                             (stepsCaloriesDomains.right ??
                               ["auto", "auto"]) as [
