@@ -262,7 +262,7 @@ const focusMetricConfig: Record<FocusMode, FocusMetricConfig> = {
     },
   },
   "heart-rate": {
-    label: "Detalhes da frequência cardíaca",
+    label: "Frequência cardíaca",
     description:
       "Acompanhe valores mín/méd/máx da frequência cardíaca para identificar tendências de recuperação.",
     unit: "bpm",
@@ -337,9 +337,9 @@ const stepsCaloriesChartConfig: ChartConfig = {
 }
 
 const timeframeOptions: { label: string; value: Timeframe }[] = [
-  { label: "Últimos 7 dias", value: "7d" },
-  { label: "Últimos 14 dias", value: "14d" },
-  { label: "Últimos 30 dias", value: "30d" },
+  { label: "7 dias", value: "7d" },
+  { label: "14 dias", value: "14d" },
+  { label: "30 dias", value: "30d" },
 ]
 
 const numberFormatter = new Intl.NumberFormat("en-US")
@@ -885,7 +885,19 @@ export default function Page() {
                       config={chartConfig}
                       className={`aspect-auto w-full ${isMobile ? "h-[240px]" : "h-[280px]"}`}
                     >
-                      <AreaChart data={chartData}>
+                      <AreaChart
+                        data={chartData}
+                        margin={
+                          isMobile
+                            ? {
+                                left: 0,
+                                right: 0,
+                                top: 0,
+                                bottom: 0,
+                              }
+                            : undefined
+                        }
+                      >
                         <defs>
                           {focusConfig.keys.map((series) => (
                             <linearGradient
@@ -940,6 +952,18 @@ export default function Page() {
                             }
                           />
                         ))}
+                        {isMobile &&
+                          !axes.includes("right") && (
+                          <YAxis
+                            yAxisId="right"
+                            orientation="right"
+                            width={35}
+                            tick={false}
+                            axisLine={false}
+                            tickLine={false}
+                            domain={["auto", "auto"]}
+                          />
+                        )}
                         <ChartTooltip
                           cursor={{ strokeOpacity: 0.2 }}
                           content={
